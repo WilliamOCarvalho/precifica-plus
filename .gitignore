@@ -1,0 +1,17 @@
+# dependencies and build output
+node_modules/
+.next/
+out/
+coverage/
+
+# local tooling / environment
+.tools/
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# editor and OS files
+.DS_Store
+Thumbs.db
+*.log
