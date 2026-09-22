@@ -7,8 +7,12 @@ O Precifica+ é o MVP de uma aplicação SaaS para ajudar pequenos negócios, ME
 ## O que está disponível neste MVP
 
 - Calculadora de preço para produtos, com estrutura inicial para serviços;
-- Cálculo de preço recomendado e composição financeira da venda;
-- Simulação de um preço de venda manual;
+- Cálculo de preço recomendado e composição financeira da venda por canal;
+- Canais editáveis: PIX, débito, crédito e marketplace;
+- Comparação de preço necessário, taxa, lucro e margem entre canais;
+- Simulação de um mesmo preço em todos os canais;
+- Equivalência de preço para manter a margem de um canal de referência;
+- Sugestões de arredondamento comercial com impacto em lucro e margem;
 - Formatação brasileira de moeda e percentuais;
 - Interface responsiva para desktop, tablet e celular;
 - Validações de dados e de cenários matematicamente impossíveis.
@@ -46,10 +50,23 @@ preço = custo_base / (1 - taxas - margem_desejada)
 Onde:
 
 - `custo_base` = produto + embalagem/materiais + outros custos variáveis + rateio de custo fixo;
-- `taxas` = imposto + taxa de pagamento + comissão, em formato decimal;
+- `taxas` = imposto da operação + comissão + taxa específica do canal, em formato decimal;
 - `margem_desejada` é a margem líquida, também em formato decimal.
 
 O cálculo é rejeitado quando taxas + margem são iguais ou superiores a 100%, pois não existe preço de venda válido nesse cenário.
+
+## Canais de venda
+
+Os canais são parte explícita do domínio. O imposto e a comissão permanecem como componentes da operação, enquanto a taxa do canal é isolada e editável em cada simulação.
+
+Os valores iniciais são somente referências: PIX (0%), débito (1,5%), crédito (3,49%) e marketplace (16%). Eles não representam taxas oficiais, e podem ser alterados pelo usuário.
+
+Além do preço recomendado por canal, o aplicativo oferece duas leituras complementares:
+
+- **Mesmo preço em todos os canais:** mostra como lucro e margem mudam para uma venda idêntica;
+- **Manter a mesma margem:** obtém a margem real de uma venda de referência e calcula o preço necessário nos demais canais para reproduzi-la.
+
+As sugestões de arredondamento comercial são sempre derivadas do preço matemático e exibem seus impactos. O sistema não classifica uma sugestão como melhor.
 
 ### Precisão monetária
 
@@ -82,15 +99,16 @@ O build da imagem executa `npm ci` a partir do `package-lock.json`; portanto, n�
 Os testes unitários cobrem:
 
 - cálculo normal, taxas e margem zeradas;
-- múltiplas taxas e arredondamento;
+- PIX, débito, crédito e marketplace;
+- comparação de canais com mesmo preço;
+- equivalência para preservar margem;
+- arredondamento comercial e monetário;
 - simulação de preço manual e prejuízo;
-- percentual total inválido;
-- valores negativos, `NaN` e preço manual inválido.
+- percentuais totais inválidos, valores negativos, `NaN` e `Infinity`.
 
 ## Roadmap inicial
 
 1. Persistência em PostgreSQL para empresas, produtos, custos e histórico;
 2. Autenticação e planos SaaS;
-3. Cenários de canais (PIX, cartão e marketplace);
-4. Regras completas para serviços: custo/hora, horas, materiais e deslocamento;
-5. Simulações salvas, relatórios e recomendações de decisão.
+3. Regras completas para serviços: custo/hora, horas, materiais e deslocamento;
+4. Simulações salvas, relatórios e recomendações de decisão.
